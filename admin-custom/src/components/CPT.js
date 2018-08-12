@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import ReactTable from "react-table";
-import 'react-table/react-table.css'
-import matchSorter from 'match-sorter'
+import 'react-table/react-table.css';
+import matchSorter from 'match-sorter';
+import CreateCPT from './CreateCPT';
 
 class CPT extends Component {
     state = {
@@ -21,6 +22,30 @@ class CPT extends Component {
                     cpts
                 });
             });
+    }
+
+    addToList = (data) => {
+        let { type, cpts } = this.state;
+
+        axios.post(`/${type}`, data)
+            .then((resp) => {
+                return resp.data
+            }).then((newCPT) => {
+                cpts = cpts.concat(newCPT);
+                this.setState({
+                    cpts
+                });
+            });
+    }
+
+    removeFromList = (rowID) => {
+        let { type, cpts } = this.state;
+
+        axios.delete(`/${type}/${rowID}`)
+            .then((resp) => {
+                cpts = cpts.filter((cpt) => cpt.id !== rowID);
+                this.setState({ cpts });
+            })
     }
 
     getCPT = () => {
@@ -73,7 +98,7 @@ class CPT extends Component {
                 filterMethod: (filter, rows) =>
                     matchSorter(rows, filter.value, { keys: ["title"] }),
                 filterAll: true,
-                Cell: props => <div className='cell-container'>{props.value}</div>
+                Cell: props => <div className='cell-container title'>{props.value}</div>
             },
             {
                 Header: 'Thumbnail',
@@ -98,18 +123,35 @@ class CPT extends Component {
                         <option value="All">All</option>
                     </select>
                 ),
-                Cell: props => <img src={props.value} className='thumbnail' alt="" />
+                Cell: props => <img src={props.value ? props.value : ""} className='thumbnail' alt="" /> 
+            },
+            {
+                Header: '',
+                filterable: false,
+                 Cell: props => <button className="delete-button" onClick={() => this.removeFromList(props.row.id)}>Trash</button> 
             }
         ];
 
         return (
-            <ReactTable
-                className="-striped -highlight"
-                data={cpts}
-                defaultPageSize={10}
-                columns={columns}
-                filterable
-            />
+            <div>
+                <h1>React Custom post types</h1> 
+                <CreateCPT
+                    addToList={(newCPT) => this.addToList(newCPT)}
+                />
+                <ReactTable
+                    className="-striped -highlight"
+                    data={cpts}
+                    columns={columns}
+                    defaultSorted={[
+                        {
+                            id: "id",
+                            desc: true
+                        }
+                    ]}
+                    defaultPageSize={10}
+                    filterable
+                />
+            </div>
         );
     }
 }
