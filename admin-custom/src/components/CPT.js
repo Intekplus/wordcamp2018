@@ -6,18 +6,25 @@ import matchSorter from 'match-sorter'
 
 class CPT extends Component {
     state = {
+        type: '',
         cpts: [],
     }
 
     componentDidMount() {
-        axios.get(`/item?_embed&status=draft,publish`).then((response) => {
+        const type = this.getCPT();
+        axios.get(`/${type}?_embed&status=draft,publish`).then((response) => {
             return response.data
         })
             .then((cpts) => {
                 this.setState({
+                    type,
                     cpts
                 });
             });
+    }
+
+    getCPT = () => {
+        return this.props.location.search.split('=')[1];
     }
 
     render() {
