@@ -9,7 +9,7 @@
 // START Editing Project Variables.
 // Project related.
 var project                 = 'intek-theme'; // Project Name.
-var projectURL              = 'wp.test'; // Local project URL of your already running WordPress site. Could be something like local.dev or localhost:8888.
+var projectURL              = 'wordcamp2018.test'; // Local project URL of your already running WordPress site. Could be something like local.dev or localhost:8888.
 var productURL              = './'; // Theme/Plugin URL. Leave it like it is, since our gulpfile.js lives in the root folder.
 
 // Style related.
