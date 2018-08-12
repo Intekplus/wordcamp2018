@@ -54,4 +54,6 @@ register_nav_menus([
     'primary_navigation' => __tr('Primary Navigation')
 ]);
 
+add_theme_support( 'post-thumbnails' );
+
 // YOU SHOULD NOT ADD CODE HERE
